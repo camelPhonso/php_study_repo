@@ -22,7 +22,7 @@ return [
     ),
     Twig::class          => function (Config $config) {
         $twig = Twig::create(VIEW_PATH, [
-            'cache'       => STORAGE_PATH . '/cache',
+            'cache'       => false, // turn off template caching - should not go to production
             'auto_reload' => $config->environment === 'development',
         ]);
 
