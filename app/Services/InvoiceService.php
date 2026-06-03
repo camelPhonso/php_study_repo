@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace App\Services;
+namespace app\Services;
 
 use App\Entity\Invoice;
 use App\Enums\InvoiceStatus;
@@ -23,5 +23,11 @@ class InvoiceService
                         ->setParameter('status', InvoiceStatus::Paid)
                         ->getQuery()
                         ->getArrayResult();
+    }
+
+    public function insertInvoice(Invoice $invoice) 
+    {
+        $this->em->persist($invoice);
+        $this->em->flush();
     }
 }

@@ -1,0 +1,14 @@
+{% extends 'layout.twig' %}
+
+{% block title %}
+    Uploads
+{% endblock %}
+
+{% block content %}
+    <h1>New Page for Uploads</h1>
+
+    <form method="POST" action="/process-file" enctype="multipart/form-data">
+        <input type="file" name="invoice-upload" />
+        <button type="submit">Upload Invoice</button>
+    </form>
+{% endblock %}

@@ -28,7 +28,7 @@ class Invoice
     private int $id;
 
     #[Column(type: Types::BIGINT)]
-    private int $amount;
+    private float $amount;
 
     #[Column(name: 'invoice_number')]
     private string $invoiceNumber;
@@ -54,6 +54,7 @@ class Invoice
     public function onPrePersist(LifecycleEventArgs $args)
     {
         $this->createdAt = new \DateTime();
+        $this->dueDate = new \DateTime("+6 months");
     }
 
     public function getId(): int
