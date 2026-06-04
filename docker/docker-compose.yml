@@ -28,10 +28,16 @@ services:
     image: mysql:8.0
     volumes:
       - ./storage/mysql:/var/lib/mysql
-      - ./db-init/:/docker-entrypoint-initdb.d
+      - ./db-init/:/docker-entrypoint-initdb.d/
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: php_database
     ports:
       - "3306:3306"
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
