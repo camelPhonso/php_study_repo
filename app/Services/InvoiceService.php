@@ -28,6 +28,11 @@ class InvoiceService
     public function insertInvoice(Invoice $invoice) 
     {
         $this->em->persist($invoice);
+
+        foreach( $invoice->getItems() as $item) {
+            $this->em->persist($item);
+        }
+
         $this->em->flush();
     }
 }

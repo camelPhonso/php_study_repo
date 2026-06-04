@@ -44,21 +44,22 @@ class FileService
         fgetcsv($file); // discard the header row
 
         while (($row = fgetcsv($file)) !== false) {
-            $transactions[] = $row;
+            $transactions[] = ['date' => $row[0], 'checkNumber' => $row[1], 'description' => $row[2], 'amount' => $row[3]];
         }
 
-        // return array_slice($transactions, -1);
         $invoice = (new Invoice())
-            ->setInvoiceNumber($transactions[1][2])
+            ->setInvoiceNumber($transactions[0]['checkNumber'])
             ->setAmount((float)$this->getTotal($transactions))
             ->setStatus(InvoiceStatus::Pending);
 
         foreach ($transactions as $transaction) {
-            $invoiceItem = (new InvoiceItem())
-                ->setDescription($transaction[2])
-                ->setQuantity(1)
-                ->setUnitPrice((int) $transaction[3])
-                ->setInvoice($invoice);
+            $invoice->addItem(
+                (new InvoiceItem())
+                    ->setDescription($transaction['description'])
+                    ->setQuantity(1)
+                    ->setUnitPrice($this->parseTotal($transaction['amount']))
+                    ->setInvoice($invoice)
+            );
         }
 
         return $invoice;
@@ -66,12 +67,12 @@ class FileService
 
     private function getTotal(array $transactions): float
     {
-        (float) $total = 0;
+        return array_sum(array_map(fn($array)=>$this->parseTotal($array['amount']), $transactions)); 
+    }
 
-        foreach ($transactions as $transaction) {
-            $total += floatval($transaction[3]);
-        }
-        
-        return $total;
+    private function parseTotal(string $amount): int
+    {
+        $newString = str_replace('$','', $amount);
+        return intval($newString);
     }
 }
