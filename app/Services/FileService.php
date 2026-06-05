@@ -7,10 +7,16 @@ namespace App\Services;
 use App\Entity\Invoice;
 use App\Entity\InvoiceItem;
 use App\Enums\InvoiceStatus;
+use App\FileSystem\FileMover;
 
 class FileService
 {
-    public function __construct() {}
+    private readonly FileMover $fileMover;
+
+    public function __construct(FileMover $mover) 
+    {
+        $this->fileMover = $mover;
+    }
 
     public function receiveUpload()
     {
@@ -34,7 +40,7 @@ class FileService
         $new_file_name = uniqid("invoice", true) . "." . $extension;
         $destination = STORAGE_PATH . $new_file_name;
 
-        return move_uploaded_file($tmp_name, $destination) ? $destination : trigger_error("There was an error uploading your file.", E_USER_ERROR);
+        return $this->fileMover->move($tmp_name, $destination) ? $destination : trigger_error("There was an error uploading your file.", E_USER_ERROR);
     }
 
     public function parseInvoice(string $file_path): Invoice

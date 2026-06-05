@@ -11,6 +11,8 @@ use Doctrine\ORM\ORMSetup;
 use Slim\Views\Twig;
 
 use Twig\Extra\Intl\IntlExtension;
+use App\FileSystem\FileMover;
+use App\FileSystem\NativeFileMover;
 
 use function DI\create;
 
@@ -30,4 +32,5 @@ return [
 
         return $twig;
     },
+    FileMover::class => fn(Config $config) => new NativeFileMover()
 ];
