@@ -1,0 +1,7 @@
+{
+    "phpunit.command": "docker exec programwithgio-app",
+    "phpunit.phpunit": "/var/www/vendor/bin/phpunit",
+    "phpunit.paths": {
+        "${workspaceFolder}": "/var/www"
+    }
+}
