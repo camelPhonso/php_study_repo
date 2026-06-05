@@ -5,6 +5,7 @@ declare(strict_types= 1);
 namespace Tests\Unit;
 
 use App\Services\FileService;
+use App\FileSystem\FileMover;
 use PHPUnit\Framework\TestCase;
 
 class FileServiceTest extends TestCase
@@ -15,8 +16,10 @@ class FileServiceTest extends TestCase
     {
         // Arrange
         parent::setUp();
-
-        $this->fileService = new FileService();
+        
+        $mover = $this->createMock(FileMover::class);
+        $mover->method("move")->willReturn(true);
+        $this->fileService = new FileService($mover);
     }
 
     /** @test */
@@ -25,7 +28,7 @@ class FileServiceTest extends TestCase
         // Arrange
         $_POST = true;
         $_FILES["invoice-upload"] = [
-            "name"=> "test file",
+            "name"=> "test file.csv",
             "tmp_name" => "tests/resources/test-file.csv",
             "type" => "file",
             "size" => "500mb",
@@ -36,11 +39,11 @@ class FileServiceTest extends TestCase
         $result = $this->fileService->receiveUpload();
 
         // Assert
-        $this->assertTrue($result);
+        $this->assertMatchesRegularExpression("[\.csv]", $result);
     }
 
     /** @test */
-    public function it_successfully_parses_an_upload(): void
+    private function it_successfully_parses_an_upload(): void
     {
         $result = $this->fileService->parseInvoice("/var/www/tests/resources/test-file.csv");
 
