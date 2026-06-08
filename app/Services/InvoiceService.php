@@ -37,10 +37,14 @@ class InvoiceService
                 $this->em->persist($item);
             }
     
-            $result = $this->em->flush()->getArrayResult();
+            $this->em->flush();
+            $this->em->commit();
 
-            return Result::Ok($result);
+            return Result::Ok($invoice);
         } catch (\Throwable $e) {
+            $this->em->rollback();
+            $this->em->clear();
+
             return Result::Fail($e);
         }
     }
