@@ -35,8 +35,8 @@ class InvoiceController
         $file_path = $this->fileService->receiveUpload();
         $invoice = $this->fileService->parseInvoice($file_path);
 
-        $this->invoiceService->insertInvoice($invoice);
+        $result = $this->invoiceService->insertInvoice($invoice);
 
-        return $this->twig->render($response, "upload/outcome.twig");
+        return $this->twig->render($response, $result->IsSuccess() ? "upload/outcome.twig" : "error/generic.twig");
     }
 }

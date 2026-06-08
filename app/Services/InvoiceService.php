@@ -7,6 +7,7 @@ namespace app\Services;
 use App\Entity\Invoice;
 use App\Enums\InvoiceStatus;
 use Doctrine\ORM\EntityManager;
+use App\Types\Result;
 
 class InvoiceService
 {
@@ -25,14 +26,22 @@ class InvoiceService
                         ->getArrayResult();
     }
 
-    public function insertInvoice(Invoice $invoice) 
+    public function insertInvoice(Invoice $invoice): Result
     {
-        $this->em->persist($invoice);
+        try {
+            $this->em->beginTransaction();
+    
+            $this->em->persist($invoice);
+    
+            foreach( $invoice->getItems() as $item) {
+                $this->em->persist($item);
+            }
+    
+            $result = $this->em->flush()->getArrayResult();
 
-        foreach( $invoice->getItems() as $item) {
-            $this->em->persist($item);
+            return Result::Ok($result);
+        } catch (\Throwable $e) {
+            return Result::Fail($e);
         }
-
-        $this->em->flush();
     }
 }
