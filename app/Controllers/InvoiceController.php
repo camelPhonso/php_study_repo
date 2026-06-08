@@ -37,6 +37,11 @@ class InvoiceController
 
         $result = $this->invoiceService->insertInvoice($invoice);
 
-        return $this->twig->render($response, $result->IsSuccess() ? "upload/outcome.twig" : "error/generic.twig");
+        switch ($result->IsSuccess()) {
+            case true:
+                return $this->twig->render($response, 'upload/outcome.twig');
+            case false:
+                return $this->twig->render($response, 'error/generic.twig');
+        }
     }
 }

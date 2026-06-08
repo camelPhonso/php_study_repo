@@ -8,19 +8,25 @@ class Result
     private mixed $value;
     private ?\Throwable $exception;
 
-    private function __construct(bool $isSuccessful, mixed $newValue)
+    /**
+     * @template T
+     * @param bool $isSuccessful
+     * @param T $newValue
+     * @param ?\Throwable $exception
+     */
+    private function __construct($isSuccessful, $newValue = null, $exception = null)
     {
         $this->isSuccess = $isSuccessful;
         $this->value = $newValue;
         $this->exception = null;
     }
 
-    public static function Ok(mixed $newValue): self
+    public static function Ok($newValue): self
     {
-        return new self(true, $newValue);
+        return new self(true, $newValue, null);
     }
 
-    public static function Fail( \Throwable $error): self
+    public static function Fail($error): self
     {
         return new self(false, null, $error);
     }
