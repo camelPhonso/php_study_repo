@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use App\Services\FileService;
 use App\FileSystem\FileMover;
 use PHPUnit\Framework\TestCase;
+use App\Entity\Invoice;
 
 class FileServiceTest extends TestCase
 {
@@ -47,6 +48,7 @@ class FileServiceTest extends TestCase
     {
         $result = $this->fileService->parseInvoice("/var/www/tests/resources/test-file.csv");
 
+        $this->assertInstanceOf(Invoice::class, $result);
         $this->assertEquals('7777', $result->getInvoiceNumber());
     }
 }
