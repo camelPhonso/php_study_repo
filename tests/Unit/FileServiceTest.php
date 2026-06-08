@@ -43,7 +43,7 @@ class FileServiceTest extends TestCase
     }
 
     /** @test */
-    private function it_successfully_parses_an_upload(): void
+    public function it_successfully_parses_an_upload(): void
     {
         $result = $this->fileService->parseInvoice("/var/www/tests/resources/test-file.csv");
 
